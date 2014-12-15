@@ -10,11 +10,18 @@
 	<div class="sign-up">
 		<form>
 			<label>Username: </label>
-			<input type="text" class="username">
+			<input type="text" name="username">
 			<label>Password: </label>
-			<input type="password" name="password" class="password">
+			<input type="password" name="password">
 			<input type="submit" value="Signin" class="signin">
 			<input type="submit" value="Signup" class="signup">
+		</form>
+	</div>
+	<div class="send-message">
+		<form>
+			<label>Message:</label>
+			<textarea name='message' style="width: 29.5%"></textarea>
+			<input type="submit" value="send" class="send-button">
 		</form>
 	</div>
 </body>
@@ -24,16 +31,21 @@ $(document).on("click", ".signup", function(e) {
 	$.ajax({
 		url: 'http://chat.api.mks.io/signup',
 		type: 'POST',
+		dataType: 'text',
 		data: {
-			username: $('.username').val(),
-			password: $('.password').val()
+			username: $('input[name=username]').val(),
+			password: $('input[name=password').val()
 		}	
 		}).done(function(data, textStatus, jqXHR) {
 			console.log(data)
 			console.log(textStatus)
 			console.log(jqXHR)
-		}).fail(function() {
-			
+			console.log('testing done')
+		}).fail(function(data, textStatus, jqXHR) {
+			console.log(data)
+			console.log(textStatus)
+			console.log(jqXHR)
+			console.log('testing fail')
 		})
 })
 $(document).on("click", ".signin", function(e) {
@@ -41,17 +53,42 @@ $(document).on("click", ".signin", function(e) {
 	$.ajax({
 		url: 'http://chat.api.mks.io/signin',
 		type: 'POST',
+		dataType: 'text',
 		data: {
-			username: $('.username').val(),
-			password: $('.password').val()
+			username: $('input[name=username]').val(),
+			password: $('input[name=password]').val()
 		}	
-		}).done(function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-		}).fail(function() {
+	}).done(function(data, textStatus, jqXHR, responseText) {
+		console.log(data)
+		// console.log(textStatus)
+		// console.log(jqXHR)
+		// console.log(responseText)
+		apiToken = data.slice(13, -2)
+	}).fail(function() {
 			
 		})
+})
+$(document).on("click", ".send-button", function(e) {
+	e.preventDefault()
+	$.ajax({
+		url: 'http://chat.api.mks.io/chats',
+		type: 'POST',
+		dataType: 'text',
+		data: {
+			apiToken: apiToken,
+			message: $('textarea[name=message]').val()
+		}
+	}).done(function(data, textStatus, jqXHR, responseText) {
+		console.log(data)
+		// console.log(textStatus)
+		// console.log(jqXHR)
+		// console.log(responseText)
+	}).fail(function(data, textStatus, jqXHR, responseText) {
+		console.log(data)
+		// console.log(textStatus)
+		// console.log(jqXHR)
+		// console.log(responseText)
+	})
 })
 </script>
 <script id="chat-message-template" type="text/x-handlebars-template">

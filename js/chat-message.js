@@ -1,7 +1,7 @@
 var source = $("#chat-message-template").html();
 var template = Handlebars.compile(source);
 
-var count = 0;
+var lastId = 0;
 
 (function getChats() {
 	$.ajax({
@@ -9,15 +9,16 @@ var count = 0;
 		url: 'http://chat.api.mks.io/chats'
 	}).done(function (chats) {
 		for (var key in chats) {
-		var myNewMessage = template({
-			user: chats[key].user,
-			message: chats[key].message
-		});
-		count = chats[key].id
-  		$('body').append(myNewMessage);
+			if (chats[key].id > lastId){
+				var myNewMessage = template({
+					user: chats[key].user,
+					message: chats[key].message
+				});
+				$('body').append(myNewMessage);
+				lastId = chats[key].id
+			}
 		}	
 	}).always(function(){
-		$('body').html()
-		setTimeout(getChats, 5000);
+		setTimeout(getChats, 1000);
 	})
 })();
