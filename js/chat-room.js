@@ -87,13 +87,13 @@ var lastId = 0;
 				lastId = chats[key].id
 			}
 		}
-		if($("span:contains('gif')")){
-					arr = $("span:contains('gif')").text().split(' ')
+		if($("span:contains('http')")){
+					arr = $("span:contains('http')").text().split(' ')
 					for (var element in arr){
-						if (element.indexOf('www') !== -1){ return element}
+						if (element.indexOf('http') !== -1){ return element}
 					}
-					var replace = $('<img>').attr('src', arr[element-1])
-					$("span:contains('gif')").text('').append(replace)
+					var replace = $('<img>').attr('src', arr[element])
+					$("span:contains('http')").text('').append(replace)
 		}	
 	}).always(function(){
 		setTimeout(getChats, 1000);
