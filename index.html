@@ -4,11 +4,10 @@
     <title>Chatitude</title>
     <script src="js/jquery-2.1.1.js"></script>
     <script src="js/handlebars-v2.0.0.js"></script>
-   
 </head>
 <body>
 	<div class="sign-up">
-		<form>
+		<form style="float: right">
 			<label>Username: </label>
 			<input type="text" name="username">
 			<label>Password: </label>
@@ -16,6 +15,8 @@
 			<input type="submit" value="Signin" class="signin">
 			<input type="submit" value="Signup" class="signup">
 		</form>
+	</div>
+	<div class="chat-room" style='min-height: 650px; max-height: 650px; width: 100%; overflow: auto; overflow-x: hidden; padding-top: 50px;'>
 	</div>
 	<div class="send-message">
 		<form>
@@ -25,75 +26,9 @@
 		</form>
 	</div>
 </body>
-<script>
-$(document).on("click", ".signup", function(e) {
-	e.preventDefault()
-	$.ajax({
-		url: 'http://chat.api.mks.io/signup',
-		type: 'POST',
-		dataType: 'text',
-		data: {
-			username: $('input[name=username]').val(),
-			password: $('input[name=password').val()
-		}	
-		}).done(function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-			console.log('testing done')
-		}).fail(function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-			console.log('testing fail')
-		})
-})
-$(document).on("click", ".signin", function(e) {
-	e.preventDefault()
-	$.ajax({
-		url: 'http://chat.api.mks.io/signin',
-		type: 'POST',
-		dataType: 'text',
-		data: {
-			username: $('input[name=username]').val(),
-			password: $('input[name=password]').val()
-		}	
-	}).done(function(data, textStatus, jqXHR, responseText) {
-		console.log(data)
-		// console.log(textStatus)
-		// console.log(jqXHR)
-		// console.log(responseText)
-		apiToken = data.slice(13, -2)
-	}).fail(function() {
-			
-		})
-})
-$(document).on("click", ".send-button", function(e) {
-	e.preventDefault()
-	$.ajax({
-		url: 'http://chat.api.mks.io/chats',
-		type: 'POST',
-		dataType: 'text',
-		data: {
-			apiToken: apiToken,
-			message: $('textarea[name=message]').val()
-		}
-	}).done(function(data, textStatus, jqXHR, responseText) {
-		console.log(data)
-		// console.log(textStatus)
-		// console.log(jqXHR)
-		// console.log(responseText)
-	}).fail(function(data, textStatus, jqXHR, responseText) {
-		console.log(data)
-		// console.log(textStatus)
-		// console.log(jqXHR)
-		// console.log(responseText)
-	})
-})
-</script>
 <script id="chat-message-template" type="text/x-handlebars-template">
-	<div class="chat-message" style="background: white">
-		<p><strong>{{ user }}</strong>:  {{ message }}</p>
+	<div class="chat-message">
+		<p><strong>{{ user }}</strong>: <span> {{ message }}</span></p>
 	</div>
 </script>
-<script src="js/chat-message.js"></script>
+<script src="js/chat-room.js"></script>
