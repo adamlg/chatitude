@@ -3,7 +3,6 @@
 
 	Message.Presenter = function(element){
 		var $view = $(element)
-		window.v = $view
 
 		$view.on('click', '.signup', function(e) {
 			e.preventDefault();
@@ -24,22 +23,19 @@
 			var apiToken = sessionStorage.getItem('apiToken');
 			var $message = $('textarea[name=message]').val();
 			Chat.send(apiToken, $message);
-		});
-
-		$view.on('clearChat', function(){
-			$('textarea[name=message]').val('');
+			$('textarea[name=message]').val('')
 		});
 
 		this.render = function(){
 			$('.chat-room').text('')
-			$view.append(
-				MessageList.map(function(message){
-					return messageView(message);
-				})
-			)
+			$view.append(Chat.map(messageView));
 		}
 
-		App.pubsub.on('renderChat', this.render)
+		// App.pubsub.on('clearChat', function(){
+		// 	$('textarea[name=message]').val('');
+		// });
+
+		App.pubsub.on('change:Chat', this.render)
 
 		App.pubsub.on('createSession', function(username){
 			$('.sign-up').text("Welcome " + username + "!").css('float', 'right');
