@@ -1,4 +1,8 @@
 (function() {
+
+	// var username = null
+	// var apiToken = null
+
 	window.User = {
 		signup: function(username, password) {
 			$.ajax({
@@ -21,9 +25,14 @@
 					password: password
 				}	
 			}).done(function(data) {
-				App.pubsub.emit('createSession', data.apiToken, username)
+				sessionStorage.setItem('apiToken', data.apiToken)
+				sessionStorage.setItem('username', username)
+				App.pubsub.emit('createSession', username)
 			})
 
 		}
+	}
+	if (sessionStorage.getItem('username') && sessionStorage.getItem('apiToken')){
+		App.pubsub.emit('createSession', sessionStorage.getItem('username'))
 	}
 })()

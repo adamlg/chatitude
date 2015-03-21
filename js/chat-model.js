@@ -1,4 +1,6 @@
 (function() {
+	window.MessageList = [];
+
 	window.Chat = {
 		lastId: 0,
 
@@ -7,12 +9,16 @@
 				type: 'GET',
 				url: 'http://chat.api.mks.io/chats'
 			}).done(function (chats) {
-				for (var key in chats){
-					if (chats[key].id > Chat.lastId){
-						App.pubsub.emit('renderChat', chats[key])
-						Chat.lastId = chats[key].id;
+				for (var value of chats){
+					if (value.id > Chat.lastId){
+						MessageList.push(value);
 					}
 				}
+				if (chats[chats.length-1].id > Chat.lastId) {
+					App.pubsub.emit('renderChat')
+					console.log('Chat.lastId', Chat.lastId, 'chats[chats.length-1].id', chats[chats.length-1].id)
+				}
+				Chat.lastId = chats[chats.length-1].id;
 			}).always(function(){
 				setTimeout(Chat.get, 1000);
 			})
@@ -29,7 +35,6 @@
 				}
 			}).done(function(){
 				App.pubsub.emit('clearChat');
-				Presenter.clearMessage();
 			})
 		}
 	}

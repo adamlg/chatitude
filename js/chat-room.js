@@ -1,34 +1,52 @@
 (function(){
-	App.pubsub.$signup = $('.signup');
-	App.pubsub.$signin = $('.signin');
-	App.pubsub.$sendButton = $('.send-button')
+	window.Message = {};
 
-	App.pubsub.$signup.on('click', function(e) {
-		e.preventDefault();
-		var $username = $('input[name=username]').val();
-		var $password = $('input[name=password]').val();
-		User.signup($username, $password);
-	});
+	Message.Presenter = function(element){
+		var $view = $(element)
+		window.v = $view
 
-	App.pubsub.$signin.on('click', function(e) {
-		e.preventDefault();
-		var $username = $('input[name=username]').val();
-		var $password = $('input[name=password]').val();
-		User.signin($username, $password);
-	});
+		$view.on('click', '.signup', function(e) {
+			e.preventDefault();
+			var $username = $('input[name=username]').val();
+			var $password = $('input[name=password]').val();
+			User.signup($username, $password);
+		});
 
-	App.pubsub.$sendButton.on('click', function(e) {
-		e.preventDefault()
-		var apiToken = sessionStorage.getItem('apiToken');
-		var $message = $('textarea[name=message]').val();
-		Chat.send(apiToken, $message);
-	});
+		$view.on('click', '.signin', function(e) {
+			e.preventDefault();
+			var $username = $('input[name=username]').val();
+			var $password = $('input[name=password]').val();
+			User.signin($username, $password);
+		});
 
-	App.pubsub.on('clearChat', function(){
-		$('textarea[name=message]').val('');
-	});
+		$view.on('click', '.send-button', function(e) {
+			e.preventDefault()
+			var apiToken = sessionStorage.getItem('apiToken');
+			var $message = $('textarea[name=message]').val();
+			Chat.send(apiToken, $message);
+		});
 
-	App.pubsub.on('renderChat', function(message){
+		$view.on('clearChat', function(){
+			$('textarea[name=message]').val('');
+		});
+
+		this.render = function(){
+			$('.chat-room').text('')
+			$view.append(
+				MessageList.map(function(message){
+					return messageView(message);
+				})
+			)
+		}
+
+		App.pubsub.on('renderChat', this.render)
+
+		App.pubsub.on('createSession', function(username){
+			$('.sign-up').text("Welcome " + username + "!").css('float', 'right');
+		});
+	}
+
+	function messageView(message){
 		var $div = $('<div>').addClass('chat-message');
 		var $strong = $('<strong>').text(message.user + ' : ');
 		var $span = $('<span>').text(message.message);
@@ -38,25 +56,11 @@
 		$('.chat-room').append($div);
 
 		$("strong:contains('" + sessionStorage.getItem('username') + "')").css('color', 'blue');
+	};
 
-		// Find and replace images.
-		if($("span:contains('http')")){
-			var arr = $("span:contains('http')").text().split(' ')
-			for (var element in arr){
-				if (element.indexOf('http') !== -1){ return element}
-			}
-			var replace = $('<img>').attr('src', arr[element])
-			$("span:contains('http')").text('').append(replace)
-		}
-	});
-
-	App.pubsub.on('createSession', function(apiToken, username){
-		sessionStorage.setItem('username', username);
-		sessionStorage.setItem('apiToken', apiToken);
-	});
-
-	if (sessionStorage.getItem('username') && sessionStorage.getItem('apiToken')){
-		$('.sign-up').text("Welcome " + sessionStorage.getItem('username') + "!").css('float', 'right');
-	}
+	Message.mount = function(element){
+		var presenter = new Message.Presenter(element);
+		presenter.render();
+	}	
 	Chat.get()
 })()
