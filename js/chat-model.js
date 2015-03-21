@@ -9,8 +9,7 @@
 			}).done(function (chats) {
 				for (var key in chats){
 					if (chats[key].id > Chat.lastId){
-						// needs to emit to present to update view
-						Presenter.renderChat(chats[key]);
+						App.pubsub.emit('renderChat', chats[key])
 						Chat.lastId = chats[key].id;
 					}
 				}
@@ -29,9 +28,7 @@
 					message: message
 				}
 			}).done(function(){
-				// Emit to presenter 
-				debugger
-				sandbox.emit('clearChat');
+				App.pubsub.emit('clearChat');
 				Presenter.clearMessage();
 			})
 		}

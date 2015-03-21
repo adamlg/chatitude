@@ -9,7 +9,6 @@
 					password: password
 				}	
 			}).done(function(){
-				// debugger
 				// Emit that signup was successful
 			})
 		},
@@ -22,9 +21,7 @@
 					password: password
 				}	
 			}).done(function(data) {
-				// Needs to emit apiToken to presenter to update view
-				// debugger
-				Presenter.createSession(data.apiToken, username)
+				App.pubsub.emit('createSession', data.apiToken, username)
 			})
 
 		}
