@@ -31,10 +31,6 @@
 			$view.append(Chat.map(messageView));
 		}
 
-		// App.pubsub.on('clearChat', function(){
-		// 	$('textarea[name=message]').val('');
-		// });
-
 		App.pubsub.on('change:Chat', this.render)
 
 		App.pubsub.on('createSession', function(username){
