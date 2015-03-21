@@ -1,22 +1,26 @@
 (function(){
 	window.Message = {};
 
+	Message.controller = {
+		;
+	}
+
 	Message.Presenter = function(element){
 		var $view = $(element)
 
-		$view.on('click', '.signup', function(e) {
-			e.preventDefault();
-			var $username = $('input[name=username]').val();
-			var $password = $('input[name=password]').val();
-			User.signup($username, $password);
-		});
+		// $view.on('click', '.signup', function(e) {
+		// 	e.preventDefault();
+		// 	var $username = $('input[name=username]').val();
+		// 	var $password = $('input[name=password]').val();
+		// 	User.signup($username, $password);
+		// });
 
-		$view.on('click', '.signin', function(e) {
-			e.preventDefault();
-			var $username = $('input[name=username]').val();
-			var $password = $('input[name=password]').val();
-			User.signin($username, $password);
-		});
+		// $view.on('click', '.signin', function(e) {
+		// 	e.preventDefault();
+		// 	var $username = $('input[name=username]').val();
+		// 	var $password = $('input[name=password]').val();
+		// 	User.signin($username, $password);
+		// });
 
 		$view.on('click', '.send-button', function(e) {
 			e.preventDefault()
@@ -25,11 +29,6 @@
 			Chat.send(apiToken, $message);
 			$('textarea[name=message]').val('')
 		});
-
-		this.render = function(){
-			$('.chat-room').text('')
-			$view.append(Chat.map(messageView));
-		}
 
 		// App.pubsub.on('clearChat', function(){
 		// 	$('textarea[name=message]').val('');
@@ -42,7 +41,11 @@
 		});
 	}
 
-	function messageView(message){
+	Messages.view = function () {
+		return Chat.map(messageView)
+	}
+
+	function messageView (message) {
 		var $div = $('<div>').addClass('chat-message');
 		var $strong = $('<strong>').text(message.user + ' : ');
 		var $span = $('<span>').text(message.message);
@@ -57,6 +60,6 @@
 	Message.mount = function(element){
 		var presenter = new Message.Presenter(element);
 		presenter.render();
-	}	
+	}
 	Chat.get()
 })()

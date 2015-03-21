@@ -2,38 +2,24 @@
 <!DOCTYPE html>
 <head>
     <title>Chatitude</title>
-    <script src="js/jquery-2.1.1.js"></script>
 </head>
 <body>
-	<div class='container'>
-		<div class="sign-up">
-			<form style="float: right">
-				<label>Username: </label>
-				<input type="text" name="username">
-				<label>Password: </label>
-				<input type="password" name="password">
-				<input type="submit" value="Signin" class="signin">
-				<input type="submit" value="Signup" class="signup">
-			</form>
-		</div>
-		<div class="chat-room" style='min-height: 650px; max-height: 650px; width: 90%; overflow: auto; overflow-x: hidden; padding-top: 50px;'>
-		</div>
-		<div class="send-message">
-			<form>
-				<label>Message:</label>
-				<textarea name='message' style="width: 29.5%"></textarea>
-				<input type="submit" value="send" class="send-button">
-			</form>
-		</div>
-	</div>
+	<div class='container'><div>
 </body>
-<script src="js/minivents.min.js"></script>
-<script src="js/App.js"></script>
-<script src="js/user-model.js"></script>
-<script src="js/chat-model.js"></script>
-<script src="js/chat-room.js"></script>
+
+<script src="vendor/jquery-2.1.1.js"></script>
+<script src="vendor/minivents.min.js"></script>
+
+<script src="src/helpers.js"></script>
+<script src="src/user-model.js"></script>
+<script src="src/chat-model.js"></script>
+<script src="src/App.js"></script>
+<script src="src/AccountForm.js"></script>
+<script src="src/ChatMessages.js"></script>
+<script src="src/ChatForm.js"></script>
+
 <script type="text/javascript">
 	var elem = $('.container')
 
-	Message.mount(elem)
+	App.mount(elem)
 </script>

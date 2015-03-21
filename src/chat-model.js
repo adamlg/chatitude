@@ -15,7 +15,7 @@
 		},
 
 		send: function(apiToken, message) {
-			$.ajax({
+			return $.ajax({
 				url: url,
 				type: 'POST',
 				dataType: 'text',
