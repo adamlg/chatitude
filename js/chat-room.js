@@ -1,102 +1,67 @@
-session = {}
-$(document).on("click", ".signup", function(e) {
-	e.preventDefault()
-	$.ajax({
-		url: 'http://chat.api.mks.io/signup',
-		type: 'POST',
-		dataType: 'text',
-		data: {
-			username: $('input[name=username]').val(),
-			password: $('input[name=password').val()
-		}	
-		}).done(function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-			console.log('testing done')
-		}).fail(function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-			console.log('testing fail')
-		})
-})
-$(document).on("click", ".signin", function(e) {
-	e.preventDefault()
-	$.ajax({
-		url: 'http://chat.api.mks.io/signin',
-		type: 'POST',
-		dataType: 'text',
-		data: {
-			username: $('input[name=username]').val(),
-			password: $('input[name=password]').val()
-		}	
-	}).done(function(data, textStatus, jqXHR, responseText) {
-		console.log(data)
-		console.log(textStatus)
-		console.log(jqXHR)
-		console.log(responseText)
-		session.apiToken = data.slice(13, -2)
-		session.username = $('input[name=username]').val()
-		$('.sign-up').text("Welcome " + session.username + "!").css('float', 'right')
-	}).fail(function() {
-			
-	})
-})
-$(document).on("click", ".send-button", function(e) {
-	e.preventDefault()
-	console.log(session.apiToken)
-	$.ajax({
-		url: 'http://chat.api.mks.io/chats',
-		type: 'POST',
-		dataType: 'text',
-		data: {
-			apiToken: session.apiToken,
-			message: $('textarea[name=message]').val()
-		}
-	}).done(function(data, textStatus, jqXHR, responseText) {
-		console.log(data)
-		console.log(textStatus)
-		console.log(jqXHR)
-		console.log(responseText)
-		$('textarea[name=message]').val('')
-	}).fail(function(data, textStatus, jqXHR, responseText) {
-		console.log(data)
-		console.log(textStatus)
-		console.log(jqXHR)
-		console.log(responseText)
-	})
-})
-var source = $("#chat-message-template").html();
-var template = Handlebars.compile(source);
+(function(){
+	window.sandbox = {
+		$signup: $('.signup'),
+		$signin: $('.signin'),
+		$sendButton: $('.send-button')
+	};
 
-var lastId = 0;
+	Events(sandbox);
 
-(function getChats() {
-	$.ajax({
-		type: 'GET',
-		url: 'http://chat.api.mks.io/chats'
-	}).done(function (chats) {
-		for (var key in chats) {
-			if (chats[key].id > lastId){
-				var myNewMessage = template({
-					user: chats[key].user,
-					message: chats[key].message
-				});
-				$('.chat-room').append(myNewMessage);
-				lastId = chats[key].id
+	sandbox.$signup.on('click', function(e) {
+		e.preventDefault();
+		var $username = $('input[name=username]').val();
+		var $password = $('input[name=password]').val();
+		User.signup($username, $password);
+	});
+
+	sandbox.$signin.on('click', function(e) {
+		e.preventDefault();
+		var $username = $('input[name=username]').val();
+		var $password = $('input[name=password]').val();
+		User.signin($username, $password);
+	});
+
+	sandbox.$sendButton.on('click', function(e) {
+		e.preventDefault()
+		var apiToken = sessionStorage.getItem('apiToken');
+		var $message = $('textarea[name=message]').val();
+		Chat.send(apiToken, $message);
+	});
+
+	sandbox.on('clearChat', function(){
+		$('textarea[name=message]').val('');
+	});
+
+	window.Presenter = {
+		// This should be a listener
+		createSession: function(apiToken, username){
+			sessionStorage.setItem('username', username);
+			sessionStorage.setItem('apiToken', apiToken);
+		},
+		// This should be a listener
+		renderChat: function(message){
+			var $div = $('<div>').addClass('chat-message');
+			var $strong = $('<strong>').text(message.user + ' : ');
+			var $span = $('<span>').text(message.message);
+
+			$div.append($strong, $span);
+
+			$('.chat-room').append($div);
+
+			$("strong:contains('" + sessionStorage.getItem('username') + "')").css('color', 'blue');
+
+			// Find and replace images.
+			if($("span:contains('http')")){
+				var arr = $("span:contains('http')").text().split(' ')
+				for (var element in arr){
+					if (element.indexOf('http') !== -1){ return element}
+				}
+				var replace = $('<img>').attr('src', arr[element])
+				$("span:contains('http')").text('').append(replace)
 			}
 		}
-		if($("span:contains('http')")){
-					arr = $("span:contains('http')").text().split(' ')
-					for (var element in arr){
-						if (element.indexOf('http') !== -1){ return element}
-					}
-					var replace = $('<img>').attr('src', arr[element])
-					$("span:contains('http')").text('').append(replace)
-		}	
-	}).always(function(){
-		setTimeout(getChats, 1000);
-		$("strong:contains('" + session.username + "')").css('color', 'blue')
-	})
-})();
+	}
+	if (sessionStorage.getItem('username') && sessionStorage.getItem('apiToken')){
+		$('.sign-up').text("Welcome " + sessionStorage.getItem('username') + "!").css('float', 'right');
+	}
+})()
