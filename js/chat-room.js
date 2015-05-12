@@ -1,3 +1,4 @@
+//testing
 session = {}
 $(document).on("click", ".signup", function(e) {
 	e.preventDefault()
