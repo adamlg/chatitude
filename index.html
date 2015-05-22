@@ -9,7 +9,7 @@
 <body>
 	<div class="sign-up">
 		<form style="float: right">
-			<label>Usernameab: </label>
+			<label>Usernamea: </label>
 			<input type="text" name="username">
 			<label>Password: </label>
 			<input type="password" name="password">
