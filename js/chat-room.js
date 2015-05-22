@@ -14,7 +14,7 @@ $(document).on("click", ".signup", function(e) {
 			console.log(data)
 			console.log(textStatus)
 			console.log(jqXHR)
-			console.log('testing donea')
+			console.log('testing done')
 		}).fail(function(data, textStatus, jqXHR) {
 			console.log(data)
 			console.log(textStatus)
